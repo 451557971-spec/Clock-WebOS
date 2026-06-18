@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Hector's Clock Desktop</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(to bottom, #0a0a0a, #1a1a1a);
+            color: white;
+            height: 100vh;
+            overflow: hidden;
+            margin: 0;
+            text-align: center;
+            padding-top: 20px;
+        }
+
+        h1 {
+            font-size: 40px;
+            margin-bottom: 10px;
+        }
+
+        #clock {
+            font-size: 60px;
+            font-weight: bold;
+            margin-top: 10px;
+            padding: 20px 40px;
+            border: 4px solid white;
+            display: inline-block; 
+            border-radius: 12px;
+            background-color: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+        }
+
+        .window {
+            width: 300px;
+            height: 200px;
+            background: black; 
+            border: 2px solid white; 
+            border-radius: 8px;
+            position: absolute;
+            cursor: grab;
+            padding: 10px;
+            top: 200px;
+            left: 50px;
+            z-index: 99999;
+            opacity: 0;
+            animation: fadeIn 0.6s forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95);}
+            to { opacity: 1; transform: scale(1);}
+        }
+
+        .window-header {
+            font-weight: bold;
+            margin-bottom: 10px;
+            cursor: grab;
+
+        .window:hover {
+            border-color: grey;
+            box-shadow: 0 0 15px grey;
+        }    
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1> Hector's Clock Desktop </h1>
+
+    <div id="clock">00:00:00</div>
+
+    <!-- Window 1 -->
+    <div class="window" id="win1" style="top: 400px; left: 50px;">
+        <div class="window-header">Window 1</div>
+        This is a simple draggable window.
+    </div>
+
+    <!-- Window 2 -->
+    <div class="window" id="win2" style="top: 400px; left: 400px;">
+        <div class="window-header">Window 2</div>
+        Tick Tock
+    </div>
+
+    <script>
+        
+        function updateClock() {
+            const now = new Date();
+            let h = now.getHours().toString().padStart(2, '0');
+            let m = now.getMinutes().toString().padStart(2, '0');
+            let s = now.getSeconds().toString().padStart(2, '0');
+            document.getElementById("clock").textContent = `${h}:${m}:${s}`; /* FIXED */
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        
+        function makeDraggable(element) {
+            let offsetX = 0, offsetY = 0, mouseX = 0, mouseY = 0;
+
+            element.onmousedown = dragMouseDown;
+
+            function dragMouseDown(e) {
+                e.preventDefault();
+                mouseX = e.clientX;
+                mouseY = e.clientY;
+                document.onmouseup = closeDrag;
+                document.onmousemove = drag;
+            }
+
+            function drag(e) {
+                e.preventDefault();
+                offsetX = mouseX - e.clientX;
+                offsetY = mouseY - e.clientY;
+                mouseX = e.clientX;
+                mouseY = e.clientY;
+                element.style.top = (element.offsetTop - offsetY) + "px";
+                element.style.left = (element.offsetLeft - offsetX) + "px";
+                element.style.opacity = "0.7";
+                element.style.opacity="1";
+            }
+
+            function closeDrag() {
+                document.onmouseup = null;
+                document.onmousemove = null;
+            }
+        }
+
+        makeDraggable(document.getElementById("win1"));
+        makeDraggable(document.getElementById("win2"));
+    </script>
+
+</body>
+</html>
